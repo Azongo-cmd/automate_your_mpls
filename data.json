@@ -1,0 +1,253 @@
+{
+    "PE": [
+        {
+            "name" : "PE1",
+            "interfaces" : [
+                {
+                    "voisin" : "",
+                    "name" : "Loopback0",
+                    "ip" : "1.1.1.1",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "voisin" : "R1",
+                    "name" : "GigabitEthernet1/0",
+                    "ip" : "174.11.0.1",
+                    "mask" : "255.255.255.0"
+                },
+                {
+                    "voisin" : "R3",
+                    "type" : "transit-ip",
+                    "name" : "GigabitEthernet2/0",
+                    "ip" : "174.13.0.1",
+                    "mask" : "255.255.255.0"
+                }
+            ],
+            "router-id" : "1.1.1.1"
+        },
+        {
+            "name" : "PE2",
+            "interfaces" : [
+                {
+                    "voisin" : "",
+                    "name" : "Loopback0",
+                    "ip" : "2.2.2.2 ",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "voisin" : "R1",
+                    "name" : "GigabitEthernet1/0",
+                    "ip" : "174.23.0.1",
+                    "mask" : "255.255.255.0"
+                },
+                {
+                    "voisin" : "R3",
+                    "name" : "GigabitEthernet2/0",
+                    "ip" : "174.21.0.1",
+                    "mask" : "255.255.255.0"
+                }
+            ],
+            "router-id" : "2.2.2.2"
+        },
+        {
+            "name" : "PE3",
+            "interfaces" : [
+                {
+                    "voisin" : "",
+                    "name" : "Loopback0",
+                    "ip" : "3.3.3.3",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "voisin" : "R2",
+                    "name" : "GigabitEthernet1/0",
+                    "ip" : "174.32.0.1",
+                    "mask" : "255.255.255.0"
+                },
+                {
+                    "voisin" : "R4",
+                    "name" : "GigabitEthernet2/0",
+                    "ip" : "174.43.0.1",
+                    "mask" : "255.255.255.0"
+                }
+            ],
+            "router-id" : "4.4.4.4"
+        },
+        {
+            "name" : "PE4",
+            "interfaces" : [
+                {
+                    "voisin" : "",
+                    "name" : "Loopback0",
+                    "ip" : "4.4.4.4",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "voisin" : "R2",
+                    "name" : "GigabitEthernet2/0",
+                    "ip" : "174.24.0.1",
+                    "mask" : "255.255.255.0"
+                },
+                {
+                    "voisin" : "R4",
+                    "name" : "GigabitEthernet1/0",
+                    "ip" : "174.44.0.1",
+                    "mask" : "255.255.255.0"
+                }
+            ],
+            "router-id" : "4.4.4.4"
+        }
+    ],
+    "Core": [
+        {
+            "name" : "R1",
+            "interfaces" : [
+                {
+                    "voisin" : "",
+                    "name" : "loopback",
+                    "ip" : "11.11.11.11",
+                    "mask" : "255.255.255.255",
+                    "poids" : "2"
+                },
+                {
+                    "voisin" : "PE1",
+                    "name" : "GigabitEthernet1/0",
+                    "ip" : "174.11.0.2",
+                    "mask" : "255.255.255.0"
+                },
+                {
+                    "voisin" : "PE2",
+                    "name" : "GigabitEthernet2/0",
+                    "ip" : "174.21.0.2",
+                    "mask" : "255.255.255.0"
+                },
+                {
+                    "voisin" : "R2",
+                    "name" : "GigabitEthernet3/0",
+                    "ip" : "174.12.0.1",
+                    "mask" : "255.255.255.0"
+                },
+                {
+                    "voisin" : "R3",
+                    "name" : "GigabitEthernet4/0",
+                    "ip" : "174.31.0.1",
+                    "mask" : "255.255.255.0"
+                }
+                
+            ],
+            "router-id" : "11.11.11.11"
+        },
+        {
+            "name" : "R2",
+            "interfaces" : [
+                {
+                    "voisin" : "",
+                    "name" : "loopback",
+                    "ip" : "22.22.22.22",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "voisin" : "PE3",
+                    "name" : "GigabitEthernet1/0",
+                    "ip" : "174.32.0.2",
+                    "mask" : "255.255.255.0"
+                },
+                {
+                    "voisin" : "PE4",
+                    "name" : "GigabitEthernet2/0",
+                    "ip" : "174.24.0.2",
+                    "mask" : "255.255.255.0"
+                },
+                {
+                    "voisin" : "R1",
+                    "name" : "GigabitEthernet3/0",
+                    "ip" : "174.12.0.2",
+                    "mask" : "255.255.255.0"
+                },
+                {
+                    "voisin" : "R4",
+                    "name" : "GigabitEthernet4/0",
+                    "ip" : "174.42.0.2",
+                    "mask" : "255.255.255.0"
+                }
+                
+            ],
+            "router-id" : "22.22.22.22"
+        },
+        {
+            "name" : "R3",
+            "interfaces" : [
+                {
+                    "voisin" : "",
+                    "name" : "Loopback0",
+                    "ip" : "33.33.33.33",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "voisin" : "R1",
+                    "name" : "GigabitEthernet4/0",
+                    "ip" : "174.31.0.3",
+                    "mask" : "255.255.255.0"
+                },
+                { "voisin" : "R4",
+                    "name" : "GigabitEthernet3/0",
+                    "ip" : "174.34.0.3",
+                    "mask" : "255.255.255.0"
+                },
+                { "voisin" : "PE2",
+                    "name" : "GigabitEthernet1/0",
+                    "ip" : "174.23.0.2",
+                    "mask" : "255.255.255.0"
+                },
+                { "voisin" : "PE1",
+                    "name" : "GigabitEthernet2/0",
+                    "ip" : "174.13.0.2",
+                    "mask" : "255.255.255.0"
+                }
+    
+            ],
+            "router-id" : "33.33.33.33"
+        },
+
+        {
+            "name" : "R4",
+            "interfaces" : [
+                {
+                    "voisin" : "",
+                    "name" : "Loopback0",
+                    "ip" : "44.44.44.44",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "voisin" : "R2",
+                    "name" : "GigabitEthernet4/0",
+                    "ip" : "174.42.0.4",
+                    "mask" : "255.255.255.0"
+                },
+                { "voisin" : "R3",
+                    "name" : "GigabitEthernet3/0",
+                    "ip" : "174.34.0.4",
+                    "mask" : "255.255.255.0"
+                },
+                { "voisin" : "PE4",
+                    "name" : "GigabitEthernet1/0",
+                    "ip" : "174.44.0.2",
+                    "mask" : "255.255.255.0"
+                },
+                { "voisin" : "PE3",
+                    "name" : "GigabitEthernet2/0",
+                    "ip" : "174.43.0.2",
+                    "mask" : "255.255.255.0"
+                }
+    
+    
+                ],
+    
+    
+            "router-id" : "44.44.44.44"
+            
+        }
+    ]
+
+
+}
