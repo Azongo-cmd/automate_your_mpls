@@ -2,7 +2,7 @@ import json
 import re
 
 def defineHeader(hostname):
-    Header = "!\n"*5 + "version 15.2\n" + "service timestamps debug datetime msec\n" + "service timestamps log datetime msec\n" + "!\n" + "hostname "+ hostname +"\n" + "!\n" + "boot-start-marker\n" +"boot-end-marker\n" + "!\n"*3 + "no aaa new-model\n" + "no ip icmp rate-limit unreachable\n" + "ip cef\n" + "!\n"*6 +"no ip domain lookup\n"+ "no ipv6 cef\n"+ "!\n"*2 +"multilink bundle-name authenticated\n" +"!\n"*9 +"ip tcp synwait-time 5\n" + "!\n"*12
+    Header = "!\n"*5 + "version 15.2\n" + "service timestamps debug datetime msec\n" + "service timestamps log datetime msec\n" + "!\n" + "hostname "+ hostname +"\n" + "!\n" + "boot-start-marker\n" +"boot-end-marker\n" + "!\n"*3 + "no aaa new-model\n" + "no ip icmp rate-limit unreachable\n" + "ip cef\n" + "!\n"*6 +"no ip domain lookup\n"+ "no ipv6 cef\n"+ "!\n"*2 +"mpls label protocol ldp \nmultilink bundle-name authenticated\n" +"!\n"*9 +"ip tcp synwait-time 5\n" + "!\n"*12
     return Header
 
 def defineFooter():
@@ -12,11 +12,11 @@ def defineFooter():
 def defineInterfaceConfig(interface):
     ipConfig = ""
     if ( interface["config"] == 'no' ):
-        ipConfig = "interface" + interface["name"] +" \n no ip address \n shutdown \n duplex full \n!"
+        ipConfig = "interface " + interface["name"] +" \n no ip address \n shutdown \n duplex full \n!"
     elif (re.search("^Loopback*", interface["name"] )): 
         ipConfig = "interface "+ interface["name"] + "\n ip address " + interface["ip"] + " "+ interface["mask"] + "\n!"
     else: 
-        ipConfig = "interface"+ interface["name"] + "\n ip address " + interface["ip"] + " " + interface["mask"] + "\n"+" negotiation auto \n!"
+        ipConfig = "interface "+ interface["name"] + "\n ip address " + interface["ip"] + " " + interface["mask"] + "\n"+" negotiation auto \n mpls ip \n!"
 
 
     return ipConfig
