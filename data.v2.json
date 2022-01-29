@@ -1,12 +1,14 @@
 {
-    "PE": [
+    "routers": [
         {
             "name" : "PE1",
+            "as": "100",
             "interfaces" : [
                 {
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
+                    "link" : "",
                     "ip" : "1.1.1.1",
                     "mask" : "255.255.255.255"
                 },
@@ -14,6 +16,7 @@
                     "config" : "no",
                     "voisin" : "",
                     "name" : "FastEthernet0/0",
+                    "link": "",
                     "ip" : "",
                     "mask" : ""
                 },
@@ -21,35 +24,42 @@
                     "config" : "yes",
                     "voisin" : "R1",
                     "name" : "GigabitEthernet1/0",
+                    "link" : "transit-ip",
                     "ip" : "174.11.0.1",
                     "mask" : "255.255.255.0"
                 },
                 {
                     "config" : "yes",
                     "voisin" : "R3",
-                    "type" : "transit-ip",
+                    "link" : "transit-ip",
                     "name" : "GigabitEthernet2/0",
                     "ip" : "174.13.0.1",
                     "mask" : "255.255.255.0"
                 },
                 {
-                    "config" : "no",
-                    "voisin" : "R3",
-                    "type" : "transit-ip",
+                    "config" : "yes",
+                    "voisin" : {
+                        "name": "CE1",
+                        "ip": "174.1.0.2",
+                        "as": "110"
+                    },
+                    "link" : "client",
                     "name" : "GigabitEthernet3/0",
-                    "ip" : "",
-                    "mask" : ""
+                    "ip" : "174.1.0.1",
+                    "mask" : "255.255.0.0"
                 }
             ],
             "router-id" : "1.1.1.1"
         },
         {
             "name" : "PE2",
+            "as": "100",
             "interfaces" : [
                 {
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
+                    "link" : "",
                     "ip" : "2.2.2.2",
                     "mask" : "255.255.255.255"
                 },
@@ -57,6 +67,7 @@
                     "config" : "no",
                     "voisin" : "",
                     "name" : "FastEthernet0/0",
+                    "link" : "",
                     "ip" : "",
                     "mask" : ""
                 },
@@ -64,6 +75,7 @@
                     "config" : "yes",
                     "voisin" : "R2",
                     "name" : "GigabitEthernet1/0",
+                    "link" : "transit-ip",
                     "ip" : "174.23.0.1",
                     "mask" : "255.255.255.0"
                 },
@@ -71,27 +83,34 @@
                     "config" : "yes",
                     "voisin" : "R1",
                     "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
                     "ip" : "174.21.0.1",
                     "mask" : "255.255.255.0"
                 },
                 {
-                    "config" : "no",
-                    "voisin" : "",
-                    "type" : "transit-ip",
+                    "config" : "yes",
+                    "voisin" : {
+                        "name": "CE2",
+                        "ip": "174.2.0.1",
+                        "as": "120"
+                    },
+                    "link" : "client",
                     "name" : "GigabitEthernet3/0",
-                    "ip" : "",
-                    "mask" : ""
+                    "ip" : "174.2.0.2",
+                    "mask" : "255.255.0.0"
                 }
             ],
             "router-id" : "2.2.2.2"
         },
         {
             "name" : "PE3",
+            "as": "100",
             "interfaces" : [
                 {
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
+                    "link" : "",
                     "ip" : "3.3.3.3",
                     "mask" : "255.255.255.255"
                 },
@@ -99,6 +118,7 @@
                     "config" : "no",
                     "voisin" : "",
                     "name" : "FastEthernet0/0",
+                    "link" : "",
                     "ip" : "",
                     "mask" : ""
                 },
@@ -106,6 +126,7 @@
                     "config" : "yes",
                     "voisin" : "R2",
                     "name" : "GigabitEthernet1/0",
+                    "link" : "transit-ip",
                     "ip" : "174.32.0.1",
                     "mask" : "255.255.255.0"
                 },
@@ -113,27 +134,34 @@
                     "config" : "yes",
                     "voisin" : "R4",
                     "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
                     "ip" : "174.43.0.1",
                     "mask" : "255.255.255.0"
                 },
                 {
-                    "config" : "no",
-                    "voisin" : "",
-                    "type" : "transit-ip",
+                    "config" : "yes",
+                    "voisin" : {
+                        "name": "CE3",
+                        "ip": "174.3.0.1",
+                        "as": "130"
+                    },
                     "name" : "GigabitEthernet3/0",
-                    "ip" : "",
-                    "mask" : ""
+                    "link" : "client",
+                    "ip" : "174.3.0.2",
+                    "mask" : "255.255.0.0"
                 }
             ],
             "router-id" : "3.3.3.3"
         },
         {
             "name" : "PE4",
+            "as": "100",
             "interfaces" : [
                 {
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
+                    "link" : "",
                     "ip" : "4.4.4.4",
                     "mask" : "255.255.255.255"
                 },
@@ -141,6 +169,7 @@
                     "config" : "no",
                     "voisin" : "",
                     "name" : "FastEthernet0/0",
+                    "link" : "",
                     "ip" : "",
                     "mask" : ""
                 },
@@ -148,6 +177,7 @@
                     "config" : "yes",
                     "voisin" : "R4",
                     "name" : "GigabitEthernet1/0",
+                    "link" : "transit-ip",
                     "ip" : "174.44.0.1",
                     "mask" : "255.255.255.0"
                 },
@@ -155,30 +185,35 @@
                     "config" : "yes",
                     "voisin" : "R2",
                     "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
                     "ip" : "174.24.0.1",
                     "mask" : "255.255.255.0"
                 },
                 {
-                    "config" : "no",
-                    "voisin" : "",
-                    "type" : "transit-ip",
+                    "config" : "yes",
+                    "voisin" : {
+                        "name": "CE4",
+                        "ip": "174.4.0.1",
+                        "as": "140"
+                    },
                     "name" : "GigabitEthernet3/0",
-                    "ip" : "",
-                    "mask" : ""
+                    "link" : "client",
+                    "ip" : "174.4.0.2",
+                    "mask" : "255.255.0.0"
                 }
                 
             ],
             "router-id" : "4.4.4.4"
-        }
-    ],
-    "Core": [
+        },
         {
             "name" : "R1",
+            "as": "100",
             "interfaces" : [
                 {
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
+                    "link" : "",
                     "ip" : "11.11.11.11",
                     "mask" : "255.255.255.255",
                     "poids" : "2"
@@ -187,6 +222,7 @@
                     "config" : "no",
                     "voisin" : "",
                     "name" : "FastEthernet0/0",
+                    "link" : "",
                     "ip" : "",
                     "mask" : ""
                 },
@@ -194,6 +230,7 @@
                     "config" : "yes",
                     "voisin" : "PE1",
                     "name" : "GigabitEthernet1/0",
+                    "link" : "transit-ip",
                     "ip" : "174.11.0.2",
                     "mask" : "255.255.255.0"
                 },
@@ -201,6 +238,7 @@
                     "config" : "yes",
                     "voisin" : "PE2",
                     "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
                     "ip" : "174.21.0.2",
                     "mask" : "255.255.255.0"
                 },
@@ -208,6 +246,7 @@
                     "config" : "yes",
                     "voisin" : "R2",
                     "name" : "GigabitEthernet3/0",
+                    "link" : "transit-ip",
                     "ip" : "174.12.0.1",
                     "mask" : "255.255.255.0"
                 },
@@ -215,6 +254,7 @@
                     "config" : "yes",
                     "voisin" : "R3",
                     "name" : "GigabitEthernet4/0",
+                    "link" : "transit-ip",
                     "ip" : "174.31.0.1",
                     "mask" : "255.255.255.0"
                 }
@@ -224,11 +264,13 @@
         },
         {
             "name" : "R2",
+            "as": "100",
             "interfaces" : [
                 {
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
+                    "link" : "",
                     "ip" : "22.22.22.22",
                     "mask" : "255.255.255.255"
                 },
@@ -236,6 +278,7 @@
                     "config" : "no",
                     "voisin" : "",
                     "name" : "FastEthernet0/0",
+                    "link" : "",
                     "ip" : "",
                     "mask" : ""
                 },
@@ -243,6 +286,7 @@
                     "config" : "yes",
                     "voisin" : "PE3",
                     "name" : "GigabitEthernet1/0",
+                    "link" : "transit-ip",
                     "ip" : "174.32.0.2",
                     "mask" : "255.255.255.0"
                 },
@@ -250,6 +294,7 @@
                     "config" : "yes",
                     "voisin" : "PE4",
                     "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
                     "ip" : "174.24.0.2",
                     "mask" : "255.255.255.0"
                 },
@@ -257,6 +302,7 @@
                     "config" : "yes",
                     "voisin" : "R1",
                     "name" : "GigabitEthernet3/0",
+                    "link" : "transit-ip",
                     "ip" : "174.12.0.2",
                     "mask" : "255.255.255.0"
                 },
@@ -264,6 +310,7 @@
                     "config" : "yes",
                     "voisin" : "R4",
                     "name" : "GigabitEthernet4/0",
+                    "link" : "transit-ip",
                     "ip" : "174.42.0.2",
                     "mask" : "255.255.255.0"
                 }
@@ -273,11 +320,13 @@
         },
         {
             "name" : "R3",
+            "as": "100",
             "interfaces" : [
                 {
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
+                    "link" : "",
                     "ip" : "33.33.33.33",
                     "mask" : "255.255.255.255"
                 },
@@ -285,6 +334,7 @@
                     "config" : "no",
                     "voisin" : "",
                     "name" : "FastEthernet0/0",
+                    "link" : "",
                     "ip" : "",
                     "mask" : ""
                 },
@@ -292,6 +342,7 @@
                     "config" : "yes",
                     "voisin" : "PE2",
                     "name" : "GigabitEthernet1/0",
+                    "link" : "transit-ip",
                     "ip" : "174.23.0.2",
                     "mask" : "255.255.255.0"
                 },
@@ -299,6 +350,7 @@
                     "config" : "yes",
                     "voisin" : "PE1",
                     "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
                     "ip" : "174.13.0.2",
                     "mask" : "255.255.255.0"
                 },
@@ -306,6 +358,7 @@
                     "config" : "yes",
                     "voisin" : "R4",
                     "name" : "GigabitEthernet3/0",
+                    "link" : "transit-ip",
                     "ip" : "174.34.0.3",
                     "mask" : "255.255.255.0"
                 },
@@ -313,6 +366,7 @@
                     "config" : "yes",
                     "voisin" : "R1",
                     "name" : "GigabitEthernet4/0",
+                    "link" : "transit-ip",
                     "ip" : "174.31.0.3",
                     "mask" : "255.255.255.0"
                 }
@@ -323,11 +377,13 @@
 
         {
             "name" : "R4",
+            "as": "100",
             "interfaces" : [
                 {
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
+                    "link" : "",
                     "ip" : "44.44.44.44",
                     "mask" : "255.255.255.255"
                 },
@@ -335,6 +391,7 @@
                     "config" : "no",
                     "voisin" : "",
                     "name" : "FastEthernet0/0",
+                    "link" : "",
                     "ip" : "",
                     "mask" : ""
                 },
@@ -342,6 +399,7 @@
                     "config" : "yes",
                     "voisin" : "PE4",
                     "name" : "GigabitEthernet1/0",
+                    "link" : "transit-ip",
                     "ip" : "174.44.0.2",
                     "mask" : "255.255.255.0"
                 },
@@ -349,6 +407,7 @@
                     "config" : "yes",
                     "voisin" : "PE3",
                     "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
                     "ip" : "174.43.0.2",
                     "mask" : "255.255.255.0"
                 },
@@ -356,6 +415,7 @@
                     "config" : "yes",
                     "voisin" : "R3",
                     "name" : "GigabitEthernet3/0",
+                    "link" : "transit-ip",
                     "ip" : "174.34.0.4",
                     "mask" : "255.255.255.0"
                 },
@@ -363,6 +423,7 @@
                     "config" : "yes",
                     "voisin" : "R2",
                     "name" : "GigabitEthernet4/0",
+                    "link" : "transit-ip",
                     "ip" : "174.42.0.4",
                     "mask" : "255.255.255.0"
                 }
@@ -371,8 +432,211 @@
     
             "router-id" : "44.44.44.44"
             
+        },
+        {
+            "name":"CE1",
+            "as": "110",
+            "interfaces": [
+                {
+                    "config" : "yes",
+                    "voisin" : "",
+                    "name" : "Loopback0",
+                    "link" : "",
+                    "ip" : "11.1.11.11",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "config" : "no",
+                    "voisin" : "",
+                    "name" : "FastEthernet0/0",
+                    "link" : "",
+                    "ip" : "",
+                    "mask" : ""
+                },
+                { 
+                    "config" : "yes",
+                    "voisin" : {
+                        "name": "PE1",
+                        "ip": "174.1.0.1",
+                        "as": "100"
+                    },
+                    "name" : "GigabitEthernet1/0",
+                    "link" : "provider",
+                    "ip" : "174.1.0.2",
+                    "mask" : "255.255.0.0"
+                },
+                { 
+                    "config" : "yes",
+                    "voisin" : "",
+                    "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
+                    "ip" : "160.0.0.1",
+                    "mask" : "255.255.255.0"
+                },
+                { 
+                    "config" : "no",
+                    "voisin" : "",
+                    "name" : "GigabitEthernet3/0",
+                    "link" : "",
+                    "ip" : "",
+                    "mask" : ""
+                }
+            ],
+            "router-id": "111.111.111.111"
+        },
+        {
+            "name":"CE2",
+            "as": "120",
+            "interfaces": [
+                {
+                    "config" : "yes",
+                    "voisin" : "",
+                    "name" : "Loopback0",
+                    "link" : "",
+                    "ip" : "22.2.22.22",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "config" : "no",
+                    "voisin" : "",
+                    "name" : "FastEthernet0/0",
+                    "link" : "",
+                    "ip" : "",
+                    "mask" : ""
+                },
+                { 
+                    "config" : "yes",
+                    "voisin" :{
+                        "name": "PE2",
+                        "ip": "174.2.0.2",
+                        "as": "100"
+                    },
+                    "name" : "GigabitEthernet1/0",
+                    "link" : "provider",
+                    "ip" : "174.2.0.1",
+                    "mask" : "255.255.0.0"
+                },
+                { 
+                    "config" : "yes",
+                    "voisin" : "",
+                    "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
+                    "ip" : "150.0.0.1",
+                    "mask" : "255.255.255.0"
+                },
+                { 
+                    "config" : "no",
+                    "voisin" : "",
+                    "name" : "GigabitEthernet3/0",
+                    "link" : "",
+                    "ip" : "",
+                    "mask" : ""
+                }
+            ],
+            "router-id": "222.222.222.222"
+        },
+        {
+            "name":"CE3",
+            "as": "130",
+            "interfaces": [
+                {
+                    "config" : "yes",
+                    "voisin" : "",
+                    "name" : "Loopback0",
+                    "link" : "",
+                    "ip" : "33.3.33.33",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "config" : "no",
+                    "voisin" : "",
+                    "name" : "FastEthernet0/0",
+                    "link" : "",
+                    "ip" : "",
+                    "mask" : ""
+                },
+                { 
+                    "config" : "yes",
+                    "voisin" : {
+                        "name": "PE3",
+                        "ip": "174.3.0.2",
+                        "as": "100"
+                    },
+                    "name" : "GigabitEthernet1/0",
+                    "link" : "provider",
+                    "ip" : "174.3.0.1",
+                    "mask" : "255.255.0.0"
+                },
+                { 
+                    "config" : "yes",
+                    "voisin" : "",
+                    "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
+                    "ip" : "140.0.0.1",
+                    "mask" : "255.255.255.0"
+                },
+                { 
+                    "config" : "no",
+                    "voisin" : "",
+                    "name" : "GigabitEthernet3/0",
+                    "link" : "",
+                    "ip" : "",
+                    "mask" : ""
+                }
+            ],
+            "router-id": "3.33.33.33"
+        },
+        {
+            "name":"CE4",
+            "as": "140",
+            "interfaces": [
+                {
+                    "config" : "no",
+                    "voisin" : "",
+                    "name" : "Loopback0",
+                    "link" : "",
+                    "ip" : "44.4.44.44",
+                    "mask" : "255.255.255.255"
+                },
+                {
+                    "config" : "no",
+                    "voisin" : "",
+                    "name" : "FastEthernet0/0",
+                    "link" : "",
+                    "ip" : "",
+                    "mask" : ""
+                },
+                { 
+                    "config" : "yes",
+                    "voisin" : {
+                        "name": "PE4",
+                        "ip": "174.4.0.2",
+                        "as": "100"
+                    },
+                    "name" : "GigabitEthernet1/0",
+                    "link" : "provider",
+                    "ip" : "174.4.0.1",
+                    "mask" : "255.255.0.0"
+                },
+                { 
+                    "config" : "yes",
+                    "voisin" : "",
+                    "name" : "GigabitEthernet2/0",
+                    "link" : "transit-ip",
+                    "ip" : "130.0.0.1",
+                    "mask" : "255.255.255.0"
+                },
+                { 
+                    "config" : "no",
+                    "voisin" : "",
+                    "name" : "GigabitEthernet3/0",
+                    "link" : "",
+                    "ip" : "",
+                    "mask" : ""
+                }
+            ],
+            "router-id": "4.44.44.44"
         }
     ]
-
 
 }
