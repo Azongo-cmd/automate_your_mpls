@@ -94,7 +94,7 @@
                         "ip": "174.2.0.1",
                         "as": "120"
                     },
-                    "link" : "client",
+                    "link" : "peer",
                     "name" : "GigabitEthernet3/0",
                     "ip" : "174.2.0.2",
                     "mask" : "255.255.0.0"
@@ -146,7 +146,7 @@
                         "as": "130"
                     },
                     "name" : "GigabitEthernet3/0",
-                    "link" : "client",
+                    "link" : "provider",
                     "ip" : "174.3.0.2",
                     "mask" : "255.255.0.0"
                 }

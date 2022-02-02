@@ -1,5 +1,6 @@
 import generateConfigFile as s
 import utils
+import cfg
 
 PROJECT_DIR = "/home/abdel/GNS3/projects/test_script/project-files/dynamips/"
 
@@ -8,7 +9,7 @@ PROJECT_DIR = "/home/abdel/GNS3/projects/test_script/project-files/dynamips/"
 def main() :
     data = utils.getTopology('data.v2.json')
     s.deployTopology(data, PROJECT_DIR)
-    #print(s.defineRouterConfig(data,data["routers"][5]))
+    #print(s.defineRouterConfig(data,data["routers"][0]))
 
 
 if __name__ == "__main__": 

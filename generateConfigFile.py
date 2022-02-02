@@ -8,8 +8,8 @@ def defineHeader(hostname):
     Header = "!\n"*9 + "version 15.2\n" + "service timestamps debug datetime msec\n" + "service timestamps log datetime msec\n" + "!\n" + "hostname "+ hostname +"\n" + "!\n" + "boot-start-marker\n" +"boot-end-marker\n" + "!\n"*3 + "no aaa new-model\n" + "no ip icmp rate-limit unreachable\n" + "ip cef\n" + "!\n"*6 +"no ip domain lookup\n"+ "no ipv6 cef\n"+ "!\n"*2 +"mpls label protocol ldp \nmultilink bundle-name authenticated\n" +"!\n"*9 +"ip tcp synwait-time 5\n" + "!\n"*12
     return Header
 
-def defineFooter():
-    Fin = "ip forward-protocol nd\n"+"!\n"*2 +"no ip http server\n"+"no ip http secure-server\n"+"!\n"*4 +"control-plane\n"+"!\n"*2+"line con 0\n"+" exec-timeout 0 0\n"+" privilege level 15\n" + " logging synchronous\n" + " stopbits 1 \n" +"line aux 0\n" +" exec-timeout 0 0\n" +" privilege level 15\n" + " logging synchronous\n"+" stopbits 1\n"+"line vty 0 4\n"+" login\n" + "!\n" *2 +"end"
+def defineFooter(router):
+    Fin = "ip forward-protocol nd\n"+"!\n"*2 + generateRouteMapConfig(router)+"\n"+"!\n"*2 +"control-plane\n"+"!\n"*2+"line con 0\n"+" exec-timeout 0 0\n"+" privilege level 15\n" + " logging synchronous\n" + " stopbits 1 \n" +"line aux 0\n" +" exec-timeout 0 0\n" +" privilege level 15\n" + " logging synchronous\n"+" stopbits 1\n"+"line vty 0 4\n"+" login\n" + "!\n" *2 +"end"
     return Fin
 
 
@@ -55,15 +55,17 @@ def defineOSPFConfig(router, AS):
 """
 
 def defineBgpNeighbor(topology, router, AS):
+    familyString = " address-family ipv4 \n"
     neighbors = getBGPNeighbor(topology, router)
     bgpNeighbor = "router bgp "+ str(router["as"])+"\n bgp router-id "+router["router-id"]+"\n bgp log-neighbor-changes \n"
     for neighbor in neighbors:
         if(neighbor["as"] == router["as"]):
-            bgpNeighbor = bgpNeighbor + " neighbor "+ neighbor["ip"] + " remote-as " + router["as"] + "\n neighbor "+ neighbor["ip"] + " update-source Loopback0 \n"
+            bgpNeighbor = bgpNeighbor + "  neighbor "+ neighbor["ip"] + " remote-as " + router["as"] + "\n neighbor "+ neighbor["ip"] + " update-source Loopback0 \n"
+            familyString = familyString + "  neighbor " + neighbor["ip"] + " send-community \n"
         else:
-            bgpNeighbor = bgpNeighbor + " neighbor "+ neighbor["ip"] + " remote-as " + neighbor["as"] + "\n"
-    #print(bgpNeighbor + defineBgpNetwork(router, AS) +"!\n")   
-    return bgpNeighbor + defineBgpNetwork(router, AS) +"!\n"
+            bgpNeighbor = bgpNeighbor + "  neighbor "+ neighbor["ip"] + " remote-as " + neighbor["as"] + "\n"
+            familyString = familyString + "  neighbor " + neighbor["ip"] + " send-community \n" 
+    return bgpNeighbor + defineBgpNetwork(router, AS) +" !\n" + familyString + configureInterfaceRouteMap(router) +" exit-address-family \n!\n"
 
 def defineBgpNetwork(router,AS):
     bgpNetwork = ""
@@ -72,6 +74,43 @@ def defineBgpNetwork(router,AS):
             if (int["config"] == "yes" and int["link"] == "transit-ip"):
                 bgpNetwork = bgpNetwork + " network " + utils.getNetwork(int["ip"],int["mask"])[0]+" mask " + int["mask"] + "\n"
     return bgpNetwork
+
+def generateRouteMapConfig(router):
+    bgpComunity = ""
+    routeMap = ""
+    prefixList = ""
+    http = "no ip http server \nno ip http secure-server \n! \n! \n"
+    if router["as"] == cfg.AS:
+        for interface in router["interfaces"]:
+            if(interface["link"] == "client"):
+                prefixList = "ip prefix-list Group1 seq 10 permit 0.0.0.0/0 le 32 \n! \n"
+                bgpComunity = "ip bgp-community new-format \nip community-list 1 permit "+ cfg.CLIENT_COMUNITY + "\n! \n"
+                routeMap = "route-map Client_1 permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 150 \n  set community " + cfg.CLIENT_COMUNITY + "\n! \n"
+            elif(interface["link"] == "peer"):
+                prefixList = "ip prefix-list Group1 seq 10 permit 0.0.0.0/0 le 32 \n! \n"
+                bgpComunity = "ip bgp-community new-format \nip community-list 1 permit "+ cfg.CLIENT_COMUNITY + "\n! \n"
+                routeMap = "route-map Peer_in permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 100 \n  set community " + cfg.PEER_COMUNITY + "\n! \n"
+                routeMap = routeMap + "route-map Peer_out permit 10 \n match community 1 \n!"
+            elif(interface["link"] == "provider"):
+                prefixList = "ip prefix-list Group1 seq 10 permit 0.0.0.0/0 le 32 \n! \n"
+                bgpComunity = "ip bgp-community new-format \nip community-list 1 permit "+ cfg.CLIENT_COMUNITY + "\n! \n"
+                routeMap = "route-map Provider_in permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 50 \n  set community " + cfg.PROVIDER_COMUNITY + "\n! \n"
+                routeMap = routeMap + "route-map Provider_out permit 10 \n match community 1 \n! \n"
+    return bgpComunity + http+ prefixList+ routeMap
+
+def configureInterfaceRouteMap(router):
+    routeMap = ""
+    if router["as"] == cfg.AS:
+        for interface in router["interfaces"]:
+            if(interface["link"] == "client"):
+                routeMap = routeMap + "  neighbor "+ interface["voisin"]["ip"]+" route-map Client_1 in \n"
+            elif(interface["link"] == "peer"):
+                routeMap = routeMap + "  neighbor "+ interface["voisin"]["ip"] +" route-map Peer_in in \n"
+                routeMap = routeMap + "  neighbor "+ interface["voisin"]["ip"]+" route-map Peer_out out \n"
+            elif(interface["link"] == "provider"):
+                routeMap = routeMap + "  neighbor "+ interface["voisin"]["ip"]+" route-map Provider_in in \n"
+                routeMap = routeMap + "  neighbor "+ interface["voisin"]["ip"]+" route-map Provider_out out \n"
+    return routeMap
 
 def getBGPNeighbor(topology, router):
     neighborTab = []
@@ -99,7 +138,7 @@ def defineRouterConfig(topology,router):
     config = defineHeader(router["name"])
     for int in router["interfaces"]:
         config = config + defineInterfaceConfig(int, router["as"] == cfg.AS) + "\n"
-    config = config + defineOSPFConfig(router, cfg.AS) + defineBgpNeighbor(topology, router, cfg.AS) + defineFooter()
+    config = config + defineOSPFConfig(router, cfg.AS) + defineBgpNeighbor(topology, router, cfg.AS) + defineFooter(router)
 
     return config
 
