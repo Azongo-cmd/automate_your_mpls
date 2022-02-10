@@ -82,7 +82,7 @@ def generateRouteMapConfig(router):
     http = "no ip http server \nno ip http secure-server \n! \n! \n"
     if router["as"] == cfg.AS:
         for interface in router["interfaces"]:
-            if(interface["link"] == "client"):
+            if(interface["link"] == "client" or interface["link"] == "client-vpn"):
                 prefixList = "ip prefix-list Group1 seq 10 permit 0.0.0.0/0 le 32 \n! \n"
                 bgpComunity = "ip bgp-community new-format \nip community-list 1 permit "+ cfg.CLIENT_COMUNITY + "\n! \n"
                 routeMap = "route-map Client_1 permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 150 \n  set community " + cfg.CLIENT_COMUNITY + "\n! \n"
@@ -102,7 +102,7 @@ def configureInterfaceRouteMap(router):
     routeMap = ""
     if router["as"] == cfg.AS:
         for interface in router["interfaces"]:
-            if(interface["link"] == "client"):
+            if(interface["link"] == "client" or interface["link"] == "client-vpn"):
                 routeMap = routeMap + "  neighbor "+ interface["voisin"]["ip"]+" route-map Client_1 in \n"
             elif(interface["link"] == "peer"):
                 routeMap = routeMap + "  neighbor "+ interface["voisin"]["ip"] +" route-map Peer_in in \n"
@@ -121,11 +121,38 @@ def getBGPNeighbor(topology, router):
     for r in topology["routers"]:
         if(r["name"] != router["name"]):
             if (int(r["as"]) == int(router["as"])):
-                #print("tes")
                 neighborTab.append({"ip": getInterface(r, "Loopback0")["ip"], "as" : router["as"]})
             
     
     return neighborTab
+
+
+def getVpnClientPE(topology, client_name):
+    # Retourne les addresse des loopback des PE auxquels sont connectés nos clients VPN
+    """
+        1. Trouver l'ensemble des CE ayant le même client name
+        2. Retourner l'addresse de loopback de ces PE
+    """
+    
+
+    return 0
+
+def defineVRFConfig(router):
+    # retourne la config de creation de la vrf
+    """
+    Reflechir à indentation des rd
+    """
+
+    return 0
+
+def defineVpnV4(interface):
+
+    return 0
+
+
+def defineVrfFamily(interface):
+
+    return 0
 
 def getInterface(router, interface): 
     for int in router["interfaces"]:
