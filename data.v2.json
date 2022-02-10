@@ -684,7 +684,7 @@
                     "config" : "yes",
                     "voisin" : {
                         "name": "PE4",
-                        "ip": "174.4.0.2",
+                        "ip": "174.5.0.2",
                         "as": "100"
                     },
                     "name" : "GigabitEthernet1/0",
