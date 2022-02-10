@@ -45,7 +45,7 @@
                         "client_name" : "CLIENT_1",
                         "client_number" : "1100"
                     },
-                    "link" : "client",
+                    "link" : "client-vpn",
                     "name" : "GigabitEthernet3/0",
                     "ip" : "174.1.0.1",
                     "mask" : "255.255.0.0"
@@ -59,7 +59,7 @@
                         "client_name" : "CLIENT_2",
                         "client_number" : "1200"
                     },
-                    "link" : "client",
+                    "link" : "client-vpn",
                     "name" : "GigabitEthernet4/0",
                     "ip" : "174.6.0.2",
                     "mask" : "255.255.0.0"
@@ -215,7 +215,7 @@
                         "client_number" : "1100"
                     },
                     "name" : "GigabitEthernet3/0",
-                    "link" : "client",
+                    "link" : "client-vpn",
                     "ip" : "174.4.0.2",
                     "mask" : "255.255.0.0"
                 },
@@ -228,7 +228,7 @@
                         "client_name" : "CLIENT_2",
                         "client_number" : "1200"
                     },
-                    "link" : "client",
+                    "link" : "client-vpn",
                     "name" : "GigabitEthernet4/0",
                     "ip" : "174.5.0.2",
                     "mask" : "255.255.0.0"
