@@ -13,7 +13,7 @@ def defineFooter(router):
     return Fin
 
 
-def defineInterfaceConfig(interface, isMpls):
+def defineInterfaceConfig(interface, isMpls, isVpn):
     ipConfig = ""
     if ( interface["config"] == 'no' ):
         if (re.search("^Gigabit*", interface["name"] )):
@@ -24,6 +24,8 @@ def defineInterfaceConfig(interface, isMpls):
         ipConfig = "interface "+ interface["name"] + "\n ip address " + interface["ip"] + " "+ interface["mask"] + "\n!"
     elif not isMpls: 
         ipConfig = "interface "+ interface["name"] + "\n ip address " + interface["ip"] + " " + interface["mask"] + "\n"+" negotiation auto\n!"
+    elif isVpn:
+        ipConfig = "interface "+ interface["name"] + "\n ip vrf forwarding "+ interface["voisin"]["client_name"]+"\n ip address " + interface["ip"] + " " + interface["mask"] + "\n"+" negotiation auto\n mpls ip\n!"
     else:
         ipConfig = "interface "+ interface["name"] + "\n ip address " + interface["ip"] + " " + interface["mask"] + "\n"+" negotiation auto\n mpls ip\n!"
     return ipConfig
@@ -60,12 +62,12 @@ def defineBgpNeighbor(topology, router, AS):
     bgpNeighbor = "router bgp "+ str(router["as"])+"\n bgp router-id "+router["router-id"]+"\n bgp log-neighbor-changes \n"
     for neighbor in neighbors:
         if(neighbor["as"] == router["as"]):
-            bgpNeighbor = bgpNeighbor + "  neighbor "+ neighbor["ip"] + " remote-as " + router["as"] + "\n neighbor "+ neighbor["ip"] + " update-source Loopback0 \n"
+            bgpNeighbor = bgpNeighbor + "  neighbor "+ neighbor["ip"] + " remote-as " + router["as"] + "\n  neighbor "+ neighbor["ip"] + " update-source Loopback0 \n"
             familyString = familyString + "  neighbor " + neighbor["ip"] + " send-community \n"
         else:
             bgpNeighbor = bgpNeighbor + "  neighbor "+ neighbor["ip"] + " remote-as " + neighbor["as"] + "\n"
             familyString = familyString + "  neighbor " + neighbor["ip"] + " send-community \n" 
-    return bgpNeighbor + defineBgpNetwork(router, AS) +" !\n" + familyString + configureInterfaceRouteMap(router) +" exit-address-family \n!\n"
+    return bgpNeighbor + defineBgpNetwork(router, AS) +" !\n" + familyString + configureInterfaceRouteMap(router) +" exit-address-family \n"
 
 def defineBgpNetwork(router,AS):
     bgpNetwork = ""
@@ -127,15 +129,21 @@ def getBGPNeighbor(topology, router):
     return neighborTab
 
 
-def getVpnClientPE(topology, client_name):
+def getVpnClientPE(topology, client_name, a_router):
     # Retourne les addresse des loopback des PE auxquels sont connectés nos clients VPN
     """
         1. Trouver l'ensemble des CE ayant le même client name
         2. Retourner l'addresse de loopback de ces PE
     """
-    
+    PELoopback = []
+    for router in topology["routers"]:
+        if( router["as"] == cfg.AS and router["name"] != a_router["name"]):
+            for interface in router["interfaces"]:
+                if(interface["link"] == "client-vpn" and interface["voisin"]["client_name"] == client_name) and getInterface(router, "Loopback0")["ip"] not in PELoopback:
+                    PELoopback.append(getInterface(router, "Loopback0")["ip"])
+        
 
-    return 0
+    return PELoopback
 
 def defineVRFConfig(router):
     # retourne la config de creation de la vrf
@@ -145,14 +153,25 @@ def defineVRFConfig(router):
 
     return 0
 
-def defineVpnV4(interface):
+def defineVpnV4(PE):
+    vpnv4 = ""
+    for ip in PE:
+        vpnv4 = vpnv4 + "  neighbor " + ip +" activate\n" + "  neighbor "+ ip +" send-community extended \n"
+    return vpnv4
 
-    return 0
 
-
-def defineVrfFamily(interface):
-
-    return 0
+def bgpVpnConfig(topology, router, AS):
+    vrfConfig = ""
+    vpnv4Config = ""
+    for interface in router["interfaces"]:
+        if(interface["link"] == "client-vpn"):
+            vpnv4Config = vpnv4Config + defineVpnV4(getVpnClientPE(topology, interface["voisin"]["client_name"], router))
+            vrfConfig = vrfConfig + " address-family ipv4 vrf " + interface["voisin"]["client_name"]+ "\n" + "  neighbor "+ interface["voisin"]["ip"] +" remote-as " +interface["voisin"]["as"] +" \n" + "  neighbor " + interface["voisin"]["ip"] + " activate \n" + \
+                " exit-address-family \n !\n"
+    if(vpnv4Config != ""):
+        vpnv4Config = " address-family vpnv4 \n" + vpnv4Config + " exit-address-family\n !\n"
+    print(vpnv4Config)
+    return vpnv4Config + vrfConfig
 
 def getInterface(router, interface): 
     for int in router["interfaces"]:
@@ -160,12 +179,16 @@ def getInterface(router, interface):
             return int
     return {}
 
+def defineBGPConfig(topology, router, AS):
+    if( bgpVpnConfig(topology, router, AS) != ""):
+        return defineBgpNeighbor(topology, router, AS) + " !\n" + bgpVpnConfig(topology, router, AS)
+    return defineBgpNeighbor(topology, router, AS) + "!\n"
 
 def defineRouterConfig(topology,router):
     config = defineHeader(router["name"])
     for int in router["interfaces"]:
-        config = config + defineInterfaceConfig(int, router["as"] == cfg.AS) + "\n"
-    config = config + defineOSPFConfig(router, cfg.AS) + defineBgpNeighbor(topology, router, cfg.AS) + defineFooter(router)
+        config = config + defineInterfaceConfig(int, router["as"] == cfg.AS, int["link"] == "client-vpn") + "\n"
+    config = config + defineOSPFConfig(router, cfg.AS) + defineBGPConfig(topology, router, cfg.AS) + defineFooter(router)
 
     return config
 
