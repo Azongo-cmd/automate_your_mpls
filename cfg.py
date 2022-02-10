@@ -13,3 +13,5 @@ trouver rd
     Si oui, getObject["last_rd"]+1
     Si non create object et client_rd.append
 """
+RD = 10
+PROJECT_DIR = "/home/abdel/GNS3/projects/test_script/project-files/dynamips/"

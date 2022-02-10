@@ -147,11 +147,14 @@ def getVpnClientPE(topology, client_name, a_router):
 
 def defineVRFConfig(router):
     # retourne la config de creation de la vrf
-    """
-    Reflechir à indentation des rd
-    """
+    Vrf = ""
+    if router["as"] == cfg.AS:
+        for interface in router["interfaces"]:
+            if(interface["link"]  == "client-vpn"):
+                Vrf = Vrf + " ip vrf " + interface["voisin"]["client_name"] + "\n" + " rd " + cfg.AS + ":" + str(cfg.RD) + "\n" + " route-target export " + cfg.AS + ":" + interface["voisin"]["client_number"] + "\n" + " route-target import " + cfg.AS + ":" + interface["voisin"]["client_number"] + "\n"
+                cfg.RD = cfg.RD + 1
+    return Vrf
 
-    return 0
 
 def defineVpnV4(PE):
     vpnv4 = ""
