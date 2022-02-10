@@ -41,7 +41,9 @@
                     "voisin" : {
                         "name": "CE1",
                         "ip": "174.1.0.2",
-                        "as": "110"
+                        "as": "110",
+                        "client_name" : "CLIENT_1",
+                        "client_number" : "1100"
                     },
                     "link" : "client",
                     "name" : "GigabitEthernet3/0",
@@ -53,7 +55,9 @@
                     "voisin" : {
                         "name": "CE6",
                         "ip": "174.6.0.1",
-                        "as": "160"
+                        "as": "160",
+                        "client_name" : "CLIENT_2",
+                        "client_number" : "1200"
                     },
                     "link" : "client",
                     "name" : "GigabitEthernet4/0",
@@ -206,7 +210,9 @@
                     "voisin" : {
                         "name": "CE4",
                         "ip": "174.4.0.1",
-                        "as": "140"
+                        "as": "140",
+                        "client_name" : "CLIENT_1",
+                        "client_number" : "1100"
                     },
                     "name" : "GigabitEthernet3/0",
                     "link" : "client",
@@ -218,7 +224,9 @@
                     "voisin" : {
                         "name": "CE5",
                         "ip": "174.5.0.1",
-                        "as": "150"
+                        "as": "150",
+                        "client_name" : "CLIENT_2",
+                        "client_number" : "1200"
                     },
                     "link" : "client",
                     "name" : "GigabitEthernet4/0",
