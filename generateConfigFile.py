@@ -5,10 +5,12 @@ import utils
 import cfg
 
 def defineHeader(router):
+    print("--Generating Header")
     Header = "!\n"*9 + "version 15.2\n" + "service timestamps debug datetime msec\n" + "service timestamps log datetime msec\n" + "!\n" + "hostname "+ router["name"] +"\n" + "!\n" + "boot-start-marker\n" +"boot-end-marker\n" + "!\n"*3 + "no aaa new-model\n" + "no ip icmp rate-limit unreachable\n" + "ip cef\n" + defineVRFConfig(router)+"!\n"*6 +"no ip domain lookup\n"+ "no ipv6 cef\n"+ "!\n"*2 +"mpls label protocol ldp \nmultilink bundle-name authenticated\n" +"!\n"*9 +"ip tcp synwait-time 5\n" + "!\n"*12
     return Header
 
 def defineFooter(router):
+    print("--Generating Footer")
     Fin = "ip forward-protocol nd\n"+"!\n"*2 + generateRouteMapConfig(router)+"\n"+"!\n"*2 +"control-plane\n"+"!\n"*2+"line con 0\n"+" exec-timeout 0 0\n"+" privilege level 15\n" + " logging synchronous\n" + " stopbits 1 \n" +"line aux 0\n" +" exec-timeout 0 0\n" +" privilege level 15\n" + " logging synchronous\n"+" stopbits 1\n"+"line vty 0 4\n"+" login\n" + "!\n" *2 +"end"
     return Fin
 
@@ -31,6 +33,7 @@ def defineInterfaceConfig(interface, isMpls, isVpn):
     return ipConfig
 
 def defineOSPFConfig(router, AS):
+    print("--Generating OSPF Configs")
     ospfPassive = ""
     ospfNetwork = ""
     ospfConfig = ""
@@ -184,16 +187,19 @@ def getInterface(router, interface):
     return {}
 
 def defineBGPConfig(topology, router, AS):
+    print("--Generating Bgp Config")
     if( bgpVpnConfig(topology, router, AS) != ""):
         return defineBgpNeighbor(topology, router, AS) + " !\n" + bgpVpnConfig(topology, router, AS)
     return defineBgpNeighbor(topology, router, AS) + "!\n"
 
 def defineRouterConfig(topology,router):
+    print("*Generating " + router["name"] +" Configs")
     config = defineHeader(router)
+    print("--Generating Interface Configs")
     for int in router["interfaces"]:
         config = config + defineInterfaceConfig(int, router["as"] == cfg.AS, int["link"] == "client-vpn") + "\n"
     config = config + defineOSPFConfig(router, cfg.AS) + defineBGPConfig(topology, router, cfg.AS) + defineFooter(router)
-
+    print("*Done ! ")
     return config
 
 def createCfgFile(name, config):
@@ -201,8 +207,6 @@ def createCfgFile(name, config):
         f.write(config)
 
 def deployTopology(topology, directory):
-    
     for router in topology["routers"]:
-        print(router["name"])
         confFile = utils.getConfigFile(router["name"], directory)
         createCfgFile(confFile, defineRouterConfig(topology,router))
