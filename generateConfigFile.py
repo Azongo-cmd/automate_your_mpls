@@ -4,8 +4,8 @@ import subprocess
 import utils
 import cfg
 
-def defineHeader(hostname):
-    Header = "!\n"*9 + "version 15.2\n" + "service timestamps debug datetime msec\n" + "service timestamps log datetime msec\n" + "!\n" + "hostname "+ hostname +"\n" + "!\n" + "boot-start-marker\n" +"boot-end-marker\n" + "!\n"*3 + "no aaa new-model\n" + "no ip icmp rate-limit unreachable\n" + "ip cef\n" + "!\n"*6 +"no ip domain lookup\n"+ "no ipv6 cef\n"+ "!\n"*2 +"mpls label protocol ldp \nmultilink bundle-name authenticated\n" +"!\n"*9 +"ip tcp synwait-time 5\n" + "!\n"*12
+def defineHeader(router):
+    Header = "!\n"*9 + "version 15.2\n" + "service timestamps debug datetime msec\n" + "service timestamps log datetime msec\n" + "!\n" + "hostname "+ router["name"] +"\n" + "!\n" + "boot-start-marker\n" +"boot-end-marker\n" + "!\n"*3 + "no aaa new-model\n" + "no ip icmp rate-limit unreachable\n" + "ip cef\n" + defineVRFConfig(router)+"!\n"*6 +"no ip domain lookup\n"+ "no ipv6 cef\n"+ "!\n"*2 +"mpls label protocol ldp \nmultilink bundle-name authenticated\n" +"!\n"*9 +"ip tcp synwait-time 5\n" + "!\n"*12
     return Header
 
 def defineFooter(router):
@@ -131,10 +131,6 @@ def getBGPNeighbor(topology, router):
 
 def getVpnClientPE(topology, client_name, a_router):
     # Retourne les addresse des loopback des PE auxquels sont connectés nos clients VPN
-    """
-        1. Trouver l'ensemble des CE ayant le même client name
-        2. Retourner l'addresse de loopback de ces PE
-    """
     PELoopback = []
     for router in topology["routers"]:
         if( router["as"] == cfg.AS and router["name"] != a_router["name"]):
@@ -151,7 +147,7 @@ def defineVRFConfig(router):
     if router["as"] == cfg.AS:
         for interface in router["interfaces"]:
             if(interface["link"]  == "client-vpn"):
-                Vrf = Vrf + " ip vrf " + interface["voisin"]["client_name"] + "\n" + " rd " + cfg.AS + ":" + str(cfg.RD) + "\n" + " route-target export " + cfg.AS + ":" + interface["voisin"]["client_number"] + "\n" + " route-target import " + cfg.AS + ":" + interface["voisin"]["client_number"] + "\n"
+                Vrf = Vrf + "ip vrf " + interface["voisin"]["client_name"] + "\n" + " rd " + cfg.AS + ":" + str(cfg.RD) + "\n" + " route-target export " + cfg.AS + ":" + interface["voisin"]["client_number"] + "\n" + " route-target import " + cfg.AS + ":" + interface["voisin"]["client_number"] + "\n!\n"
                 cfg.RD = cfg.RD + 1
     return Vrf
 
@@ -166,14 +162,19 @@ def defineVpnV4(PE):
 def bgpVpnConfig(topology, router, AS):
     vrfConfig = ""
     vpnv4Config = ""
+    PE = []
     for interface in router["interfaces"]:
         if(interface["link"] == "client-vpn"):
-            vpnv4Config = vpnv4Config + defineVpnV4(getVpnClientPE(topology, interface["voisin"]["client_name"], router))
             vrfConfig = vrfConfig + " address-family ipv4 vrf " + interface["voisin"]["client_name"]+ "\n" + "  neighbor "+ interface["voisin"]["ip"] +" remote-as " +interface["voisin"]["as"] +" \n" + "  neighbor " + interface["voisin"]["ip"] + " activate \n" + \
                 " exit-address-family \n !\n"
+            for ip in getVpnClientPE(topology, interface["voisin"]["client_name"], router):
+                if ip not in PE:
+                    PE.append(ip)
+    
+    vpnv4Config = vpnv4Config + defineVpnV4(PE)
+    
     if(vpnv4Config != ""):
         vpnv4Config = " address-family vpnv4 \n" + vpnv4Config + " exit-address-family\n !\n"
-    print(vpnv4Config)
     return vpnv4Config + vrfConfig
 
 def getInterface(router, interface): 
@@ -188,7 +189,7 @@ def defineBGPConfig(topology, router, AS):
     return defineBgpNeighbor(topology, router, AS) + "!\n"
 
 def defineRouterConfig(topology,router):
-    config = defineHeader(router["name"])
+    config = defineHeader(router)
     for int in router["interfaces"]:
         config = config + defineInterfaceConfig(int, router["as"] == cfg.AS, int["link"] == "client-vpn") + "\n"
     config = config + defineOSPFConfig(router, cfg.AS) + defineBGPConfig(topology, router, cfg.AS) + defineFooter(router)
