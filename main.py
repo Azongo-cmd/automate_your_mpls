@@ -8,8 +8,8 @@ PROJECT_DIR = "/home/abdel/GNS3/projects/test_script/project-files/dynamips/"
 
 def main() :
     data = utils.getTopology('data.v2.json')
-    s.deployTopology(data, cfg.PROJECT_DIR)
-    #print(s.defineRouterConfig(data,data["routers"][3]))
+    #s.deployTopology(data, cfg.PROJECT_DIR)
+    print(s.ressetRouter(data["routers"][0]))
     #print(s.defineRouterConfig(data,data["routers"][0]))
     #print(s.defineVRFConfig(data["routers"][0]))
     #print(s.defineVRFConfig(data["routers"][3]))

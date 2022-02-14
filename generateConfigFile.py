@@ -6,7 +6,7 @@ import cfg
 
 def defineHeader(router):
     print("--Generating Header")
-    Header = "!\n"*9 + "version 15.2\n" + "service timestamps debug datetime msec\n" + "service timestamps log datetime msec\n" + "!\n" + "hostname "+ router["name"] +"\n" + "!\n" + "boot-start-marker\n" +"boot-end-marker\n" + "!\n"*3 + "no aaa new-model\n" + "no ip icmp rate-limit unreachable\n" + "ip cef\n" + defineVRFConfig(router)+"!\n"*6 +"no ip domain lookup\n"+ "no ipv6 cef\n"+ "!\n"*2 +"mpls label protocol ldp \nmultilink bundle-name authenticated\n" +"!\n"*9 +"ip tcp synwait-time 5\n" + "!\n"*12
+    Header = "!\n"*9 + "version 15.2\n" + "service timestamps debug datetime msec\n" + "service timestamps log datetime msec\n" + "!\n" + "hostname "+ router["name"] +"\n" + "!\n" + "boot-start-marker\n" +"boot-end-marker\n" + "!\n"*3 + "no aaa new-model\n" + "no ip icmp rate-limit unreachable\n" + "ip cef\n" + defineVRFConfig(router)+"!\n"*6 +"no ip domain lookup\n"+ "no ipv6 cef\n"+ "!\n"*2 + defineMpls(router) + "multilink bundle-name authenticated\n" +"!\n"*9 +"ip tcp synwait-time 5\n" + "!\n"*12
     return Header
 
 def defineFooter(router):
@@ -87,7 +87,7 @@ def generateRouteMapConfig(router):
     http = "no ip http server \nno ip http secure-server \n! \n! \n"
     if router["as"] == cfg.AS:
         for interface in router["interfaces"]:
-            if(interface["link"] == "client" or interface["link"] == "client-vpn"):
+            if(interface["link"] == "client" or interface["link"] == "client-vpn" and interface["config"] == "yes"):
                 prefixList = "ip prefix-list Group1 seq 10 permit 0.0.0.0/0 le 32 \n! \n"
                 bgpComunity = "ip bgp-community new-format \nip community-list 1 permit "+ cfg.CLIENT_COMUNITY + "\n! \n"
                 routeMap = "route-map Client_1 permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 150 \n  set community " + cfg.CLIENT_COMUNITY + "\n! \n"
@@ -149,7 +149,7 @@ def defineVRFConfig(router):
     Vrf = ""
     if router["as"] == cfg.AS:
         for interface in router["interfaces"]:
-            if(interface["link"]  == "client-vpn"):
+            if(interface["link"]  == "client-vpn" and interface["config"] == "yes"):
                 Vrf = Vrf + "ip vrf " + interface["voisin"]["client_name"] + "\n" + " rd " + cfg.AS + ":" + str(cfg.RD) + "\n" + " route-target export " + cfg.AS + ":" + interface["voisin"]["client_number"] + "\n" + " route-target import " + cfg.AS + ":" + interface["voisin"]["client_number"] + "\n!\n"
                 cfg.RD = cfg.RD + 1
     return Vrf
@@ -211,3 +211,20 @@ def deployTopology(topology, directory):
         confFile = utils.getConfigFile(router["name"], directory)
         print(confFile)
         createCfgFile(confFile, defineRouterConfig(topology,router))
+
+def defineMpls(router):
+    for i in router["interfaces"]:
+        if i["config"] == "yes":
+            return "mpls label protocol ldp\n"
+    return ""
+
+def ressetRouter(router):
+    #for r in topology["routers"]:
+    for i in router["interfaces"]:
+        i["config"] = "no"
+    return defineHeader(router) + defineFooter(router)
+
+def ressetRouters(topology, directory):
+    for router in topology["routers"]:
+        confFile = utils.getConfigFile(router["name"], directory)
+        createCfgFile(confFile, ressetRouter(router))
