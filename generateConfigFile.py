@@ -209,4 +209,5 @@ def createCfgFile(name, config):
 def deployTopology(topology, directory):
     for router in topology["routers"]:
         confFile = utils.getConfigFile(router["name"], directory)
+        print(confFile)
         createCfgFile(confFile, defineRouterConfig(topology,router))
