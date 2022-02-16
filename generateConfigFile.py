@@ -39,16 +39,18 @@ def defineOSPFConfig(router, AS):
     ospfConfig = ""
     for int in router["interfaces"] : 
         if(int["config"] == "yes"):
-            if router["as"] == AS:
+            if router["as"] == AS and int["link"] != "":
                 
                 if int["link"] == "client" or int["link"] == "peer" or int["link"] == "provider":
                     ospfPassive = ospfPassive + " passive-interface "+ int["name"] + "\n"
-                else:
+                    networkInfo = utils.getNetwork(int["ip"], int["mask"])
+                    ospfNetwork = ospfNetwork + " network " +networkInfo[0]+" "+ networkInfo[1] +" area 0\n"
+                elif int["link"] == "transit-ip":
                     ospfConfig = "router ospf "+ router["router-id"].split(".")[0] + " \n"+ \
                     " router-id " + router["router-id"]+" \n"
-
-                networkInfo = utils.getNetwork(int["ip"], int["mask"])
-                ospfNetwork = ospfNetwork + " network " +networkInfo[0]+" "+ networkInfo[1] +" area 0\n"
+                    networkInfo = utils.getNetwork(int["ip"], int["mask"])
+                    ospfNetwork = ospfNetwork + " network " +networkInfo[0]+" "+ networkInfo[1] +" area 0\n"
+                    
     if ospfPassive != "":
         return ospfConfig + ospfPassive + ospfNetwork + "!\n"
     else:
