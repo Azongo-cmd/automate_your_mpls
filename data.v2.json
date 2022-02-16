@@ -8,7 +8,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "1.1.1.1",
                     "mask" : "255.255.255.255"
                 },
@@ -75,7 +75,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "2.2.2.2",
                     "mask" : "255.255.255.255"
                 },
@@ -126,7 +126,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "3.3.3.3",
                     "mask" : "255.255.255.255"
                 },
@@ -189,7 +189,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "4.4.4.4",
                     "mask" : "255.255.255.255"
                 },
@@ -257,7 +257,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "11.11.11.11",
                     "mask" : "255.255.255.255",
                     "poids" : "2"
@@ -314,7 +314,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "22.22.22.22",
                     "mask" : "255.255.255.255"
                 },
@@ -370,7 +370,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "33.33.33.33",
                     "mask" : "255.255.255.255"
                 },
@@ -427,7 +427,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "44.44.44.44",
                     "mask" : "255.255.255.255"
                 },
@@ -485,7 +485,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "11.1.11.11",
                     "mask" : "255.255.255.255"
                 },
@@ -536,7 +536,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "22.2.22.22",
                     "mask" : "255.255.255.255"
                 },
@@ -587,7 +587,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "33.3.33.33",
                     "mask" : "255.255.255.255"
                 },
@@ -638,7 +638,7 @@
                     "config" : "no",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "44.4.44.44",
                     "mask" : "255.255.255.255"
                 },
@@ -689,7 +689,7 @@
                     "config" : "no",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "44.4.44.44",
                     "mask" : "255.255.255.255"
                 },
@@ -741,7 +741,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "66.6.66.66",
                     "mask" : "255.255.255.255"
                 },
@@ -793,7 +793,7 @@
                     "config" : "yes",
                     "voisin" : "",
                     "name" : "Loopback0",
-                    "link" : "",
+                    "link" : "transit-ip",
                     "ip" : "77.7.77.77",
                     "mask" : "255.255.255.255"
                 },
