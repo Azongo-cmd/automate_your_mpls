@@ -40,11 +40,12 @@ def defineOSPFConfig(router, AS):
     for int in router["interfaces"] : 
         if(int["config"] == "yes"):
             if router["as"] == AS:
-                ospfConfig = "router ospf "+ router["router-id"].split(".")[0] + " \n"+ \
-                " router-id " + router["router-id"]+" \n"
                 
-                if(int["link"] != "transit-ip" and int["link"] != ""):
+                if int["link"] == "client" or int["link"] == "peer" or int["link"] == "provider":
                     ospfPassive = ospfPassive + " passive-interface "+ int["name"] + "\n"
+                else:
+                    ospfConfig = "router ospf "+ router["router-id"].split(".")[0] + " \n"+ \
+                    " router-id " + router["router-id"]+" \n"
 
                 networkInfo = utils.getNetwork(int["ip"], int["mask"])
                 ospfNetwork = ospfNetwork + " network " +networkInfo[0]+" "+ networkInfo[1] +" area 0\n"
@@ -53,11 +54,6 @@ def defineOSPFConfig(router, AS):
     else:
         return ospfConfig + ospfNetwork + "!\n"
 
-
-"""def defineBGPConfig(router):
-    BgpConfig = ""
-    return BgpConfig
-"""
 
 def defineBgpNeighbor(topology, router, AS):
     familyString = " address-family ipv4 \n"
@@ -90,16 +86,16 @@ def generateRouteMapConfig(router):
             if(interface["link"] == "client" or interface["link"] == "client-vpn" and interface["config"] == "yes"):
                 prefixList = "ip prefix-list Group1 seq 10 permit 0.0.0.0/0 le 32 \n! \n"
                 bgpComunity = "ip bgp-community new-format \nip community-list 1 permit "+ cfg.CLIENT_COMUNITY + "\n! \n"
-                routeMap = "route-map Client_1 permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 150 \n  set community " + cfg.CLIENT_COMUNITY + "\n! \n"
+                routeMap = routeMap + "route-map Client_1 permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 150 \n  set community " + cfg.CLIENT_COMUNITY + "\n! \n"
             elif(interface["link"] == "peer"):
                 prefixList = "ip prefix-list Group1 seq 10 permit 0.0.0.0/0 le 32 \n! \n"
                 bgpComunity = "ip bgp-community new-format \nip community-list 1 permit "+ cfg.CLIENT_COMUNITY + "\n! \n"
-                routeMap = "route-map Peer_in permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 100 \n  set community " + cfg.PEER_COMUNITY + "\n! \n"
+                routeMap = routeMap + "route-map Peer_in permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 100 \n  set community " + cfg.PEER_COMUNITY + "\n! \n"
                 routeMap = routeMap + "route-map Peer_out permit 10 \n match community 1 \n!"
             elif(interface["link"] == "provider"):
                 prefixList = "ip prefix-list Group1 seq 10 permit 0.0.0.0/0 le 32 \n! \n"
                 bgpComunity = "ip bgp-community new-format \nip community-list 1 permit "+ cfg.CLIENT_COMUNITY + "\n! \n"
-                routeMap = "route-map Provider_in permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 50 \n  set community " + cfg.PROVIDER_COMUNITY + "\n! \n"
+                routeMap = routeMap + "route-map Provider_in permit 10 \n  match ip address prefix-list Group1 \n  set local-preference 50 \n  set community " + cfg.PROVIDER_COMUNITY + "\n! \n"
                 routeMap = routeMap + "route-map Provider_out permit 10 \n match community 1 \n! \n"
     return bgpComunity + http+ prefixList+ routeMap
 
@@ -188,9 +184,12 @@ def getInterface(router, interface):
 
 def defineBGPConfig(topology, router, AS):
     print("--Generating Bgp Config")
-    if( bgpVpnConfig(topology, router, AS) != ""):
-        return defineBgpNeighbor(topology, router, AS) + " !\n" + bgpVpnConfig(topology, router, AS)
-    return defineBgpNeighbor(topology, router, AS) + "!\n"
+    for interface in router["interfaces"]:
+        if(interface["config"] == "yes"):
+            if( bgpVpnConfig(topology, router, AS) != ""):
+                return defineBgpNeighbor(topology, router, AS) + " !\n" + bgpVpnConfig(topology, router, AS)
+            return defineBgpNeighbor(topology, router, AS) + "!\n"
+    return ""
 
 def defineRouterConfig(topology,router):
     print("*Generating " + router["name"] +" Configs")
@@ -218,13 +217,13 @@ def defineMpls(router):
             return "mpls label protocol ldp\n"
     return ""
 
-def ressetRouter(router):
+def resetRouter(topology,router):
     #for r in topology["routers"]:
     for i in router["interfaces"]:
         i["config"] = "no"
-    return defineHeader(router) + defineFooter(router)
+    return defineRouterConfig(topology,router)
 
-def ressetRouters(topology, directory):
+def resetTopology(topology, directory):
     for router in topology["routers"]:
         confFile = utils.getConfigFile(router["name"], directory)
-        createCfgFile(confFile, ressetRouter(router))
+        createCfgFile(confFile, resetRouter(topology,router))
