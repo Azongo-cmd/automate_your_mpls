@@ -10,7 +10,7 @@ Le scprit est pour l'instant composé de 5 principaux fichiers.
 - **main.py** : est le point d'entrée du script
 - **cfg.py** : Permet de définir l'ensemble des constantes nécessaire au fonctionnement su programme (AS, PROJECT_DIR)
 - **utils.py**: Définition de fonction utilitaires
-- **data.json** : Définition de notre topologie GNS3 sous format json
+- **data.v2.json** : Définition de notre topologie GNS3 sous format json
   # 3. Lancement
 Pour le lancement du script, il est  nécessaire de:
 - Créer votre topologie GNS3
