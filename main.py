@@ -1,18 +1,23 @@
 import generateConfigFile as s
 import utils
 import cfg
-
-PROJECT_DIR = "/home/abdel/GNS3/projects/test_script/project-files/dynamips/"
+import sys
 
 
 
 def main() :
+
     data = utils.getTopology('data.v2.json')
-    #s.deployTopology(data, cfg.PROJECT_DIR)
-    print(s.ressetRouter(data["routers"][0]))
-    #print(s.defineRouterConfig(data,data["routers"][0]))
-    #print(s.defineVRFConfig(data["routers"][0]))
-    #print(s.defineVRFConfig(data["routers"][3]))
+    if len(sys.argv) < 2:
+        print('No argument. Add : \n - reset to reset topology \n - deploy to deploy topology')
+    else:
+        if(sys.argv[1] == 'deploy'):
+            s.deployTopology(data, cfg.PROJECT_DIR)
+        elif (sys.argv[1] == 'reset'):
+            s.resetTopology(data, cfg.PROJECT_DIR)
+        else:
+            print('Bad argument. Add : \n - reset to reset topology \n - deploy to deploy topology')
+
 
 
 if __name__ == "__main__": 
